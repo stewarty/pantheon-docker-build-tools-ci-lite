@@ -9,6 +9,12 @@ ARG PHPVERSION
 # Switch to root user
 USER root
 
+# Setup apt keys and install google-chrome.
+RUN echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list && \
+    curl https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+    apt update -y && \
+    apt install -y google-chrome-stable
+
 # Install necessary packages for PHP extensions
 RUN apt-get update && \
      apt-get install -y \
@@ -56,12 +62,6 @@ RUN apt-get update
 RUN apt-get install -y ruby jq curl rsync hub
 RUN gem install circle-cli
 
-# Install google-chrome.
-RUN echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list && \
-    curl https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
-    apt update -y && \
-    apt install -y google-chrome-stable
-
 # Make sure we are on the latest version of Composer
 RUN composer selfupdate --2
 
@@ -84,7 +84,7 @@ USER tester
 RUN git config --global --add safe.directory '*'
 
 # Install terminus
-RUN curl -L https://github.com/pantheon-systems/terminus/releases/download/3.1.2/terminus.phar -o /usr/local/bin/terminus && \
+RUN curl -L https://github.com/pantheon-systems/terminus/releases/download/3.4.0/terminus.phar -o /usr/local/bin/terminus && \
     chmod +x /usr/local/bin/terminus
 RUN terminus self:update
 
