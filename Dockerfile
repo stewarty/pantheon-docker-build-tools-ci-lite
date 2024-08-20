@@ -16,8 +16,9 @@ RUN echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/so
     apt install -y google-chrome-stable
 
 # Install necessary packages for PHP extensions
-RUN apt-get update && \
-     apt-get install -y \
+RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+    apt-get update && \
+    apt-get install -y \
         dnsutils \
         libmagickwand-dev \
         libzip-dev \
@@ -60,7 +61,7 @@ ADD . /build-tools-ci
 # Collect the components we need for this image
 RUN apt-get update
 RUN apt-get install -y ruby jq curl rsync hub
-RUN gem install circle-cli
+RUN gem install public_suffix -v 5.1.1 && gem install circle-cli
 
 # Make sure we are on the latest version of Composer
 RUN composer selfupdate --2
